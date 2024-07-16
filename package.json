@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
+    "build": "esbuild app.js --bundle --outfile=out.js --serve=9000 --servedir=. --watch",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
