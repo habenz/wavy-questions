@@ -1,3 +1,5 @@
+import "./app.css";
+
 // TODO: probbaly move this into its own file or something
 new EventSource("/esbuild").addEventListener("change", () => location.reload());
 
