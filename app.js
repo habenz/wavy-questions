@@ -4,6 +4,7 @@ import "./app.css";
 new EventSource("/esbuild").addEventListener("change", () => location.reload());
 
 const toDisplay = "???";
+const whitespaceRatio = 1 / 4;
 
 const textBox = document.createElement("canvas");
 const ctx = textBox.getContext("2d");
@@ -40,8 +41,9 @@ setInterval(() => {
     const delay = y;
     let locationToDrawX = 0;
     if (time >= delay) {
-      // .2*width is .333 of just the text width
-      locationToDrawX = -0.2 * width * Math.sin(toRadians(time - delay));
+      const maxTranslation =
+        (width * whitespaceRatio) / (1 + 2 * whitespaceRatio);
+      locationToDrawX = -maxTranslation * Math.sin(toRadians(time - delay));
     }
     ctx.putImageData(row, locationToDrawX, y);
   }
@@ -53,7 +55,9 @@ function getCanvasSize(text) {
   const ctx = document.createElement("canvas").getContext("2d");
   setFontAndStyling(ctx);
   const metrics = ctx.measureText(toDisplay);
-  const width = metrics.width * 1.667;
+  // We want the canvas to be wide enough to fit the text plus some whitespace on either
+  // side for the animation to wave back and forth
+  const width = metrics.width * (1 + 2 * whitespaceRatio);
   // use the font instead of actual bc you can't set the text baseline to
   // the center of the actual text that's being displayed, only the center of the font
   const height = metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
