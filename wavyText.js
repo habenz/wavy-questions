@@ -1,4 +1,4 @@
-export function drawWavyText(textToDisplay, whitespaceRatio = 1 / 4) {
+export function getWavyText(textToDisplay, whitespaceRatio = 1 / 4) {
   const textBox = document.createElement("canvas");
   const ctx = textBox.getContext("2d");
 
@@ -10,14 +10,12 @@ export function drawWavyText(textToDisplay, whitespaceRatio = 1 / 4) {
   // draw the stuff
   setFontAndStyling(ctx);
   ctx.fillText(textToDisplay, width / 2, height / 2);
-  document.body.append(textBox);
 
   // shift the image
   const drawnText = ctx.getImageData(0, 0, width, height);
   let time = 0;
   setInterval(() => {
     ctx.clearRect(0, 0, width, height);
-    setFontAndStyling(ctx); // this line seems to be uneccessary
 
     for (let y = 0; y < drawnText.height; y++) {
       // grab the row of pixels
@@ -43,6 +41,8 @@ export function drawWavyText(textToDisplay, whitespaceRatio = 1 / 4) {
 
     time += 1;
   }, 5);
+
+  return textBox;
 }
 
 function getCanvasSize(text, whitespaceRatio) {
@@ -52,7 +52,7 @@ function getCanvasSize(text, whitespaceRatio) {
   // We want the canvas to be wide enough to fit the text plus some whitespace on either
   // side for the animation to wave back and forth
   const width = metrics.width * (1 + 2 * whitespaceRatio);
-  // use the font instead of actual bc you can't set the text baseline to
+  // use the fontBoundingBox instead of actualBoundingBoxAscent bc you can't set the text baseline to
   // the center of the actual text that's being displayed, only the center of the font
   const height = metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent;
   return { height, width };

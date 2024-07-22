@@ -1,8 +1,11 @@
 import "./app.css";
-import { drawWavyText } from "./wavyText";
+import { getWavyText } from "./wavyText";
 
 // TODO: probbaly move this into its own file or something
 new EventSource("/esbuild").addEventListener("change", () => location.reload());
 
-const toDisplay = "???";
-drawWavyText(toDisplay);
+const root = document.getElementById("wrapper");
+
+let textToDisplay = "???";
+let drawnText = getWavyText(textToDisplay);
+root.append(drawnText);
