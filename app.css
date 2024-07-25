@@ -16,3 +16,22 @@
 canvas {
   border: 2px solid blue;
 }
+
+#controls {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+  padding: 0.25em;
+  border: 2px solid blue;
+}
+
+#controls span {
+  margin-bottom: -0.3em;
+  padding-top: 0.5em;
+}
+
+#text-input-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 0.5em;
+}

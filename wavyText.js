@@ -1,14 +1,29 @@
-export function getWavyText(textToDisplay, whitespaceRatio = 1 / 4) {
+const defaultOptions = {
+  whitespaceRatio: 1 / 4,
+  fontSize: 100,
+  tickRate: 5,
+  wiggliness: 1,
+};
+
+export function getWavyText(textToDisplay, options = defaultOptions) {
+  const { whitespaceRatio, fontSize, tickRate, wiggliness } = {
+    ...defaultOptions,
+    ...options,
+  };
   const textBox = document.createElement("canvas");
   const ctx = textBox.getContext("2d");
 
   // figure out how big the canvas should be
-  const { height, width } = getCanvasSize(textToDisplay, whitespaceRatio);
+  const { height, width } = getCanvasSize(
+    textToDisplay,
+    whitespaceRatio,
+    fontSize
+  );
   textBox.setAttribute("width", `${width}px`);
   textBox.setAttribute("height", `${height}px`);
 
-  // draw the stuff
-  setFontAndStyling(ctx);
+  // draw the text on the canvas
+  setFontAndStyling(ctx, fontSize);
   ctx.fillText(textToDisplay, width / 2, height / 2);
 
   // shift the image
@@ -34,20 +49,21 @@ export function getWavyText(textToDisplay, whitespaceRatio = 1 / 4) {
       if (time >= delay) {
         const maxTranslation =
           (width * whitespaceRatio) / (1 + 2 * whitespaceRatio);
-        locationToDrawX = -maxTranslation * Math.sin(toRadians(time - delay));
+        locationToDrawX =
+          -maxTranslation * Math.sin(toRadians(wiggliness * (time - delay)));
       }
       ctx.putImageData(row, locationToDrawX, y);
     }
 
     time += 1;
-  }, 5);
+  }, tickRate);
 
   return textBox;
 }
 
-function getCanvasSize(text, whitespaceRatio) {
+function getCanvasSize(text, whitespaceRatio, fontSize) {
   const ctx = document.createElement("canvas").getContext("2d");
-  setFontAndStyling(ctx);
+  setFontAndStyling(ctx, fontSize);
   const metrics = ctx.measureText(text);
   // We want the canvas to be wide enough to fit the text plus some whitespace on either
   // side for the animation to wave back and forth
@@ -58,10 +74,10 @@ function getCanvasSize(text, whitespaceRatio) {
   return { height, width };
 }
 
-function setFontAndStyling(canvasContext) {
+function setFontAndStyling(canvasContext, fontSize) {
   canvasContext.textAlign = "center";
   canvasContext.textBaseline = "middle";
-  canvasContext.font = "100px serif";
+  canvasContext.font = `${fontSize}px serif`;
 }
 
 function toRadians(angle) {
