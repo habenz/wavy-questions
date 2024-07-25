@@ -26,25 +26,30 @@ export function getWavyText(textToDisplay, options = defaultOptions) {
   setFontAndStyling(ctx, fontSize);
   ctx.fillText(textToDisplay, width / 2, height / 2);
 
-  // shift the image
+  // turn the text into rows of pixels
   const drawnText = ctx.getImageData(0, 0, width, height);
+  const textImageByRows = [];
+  for (let y = 0; y < drawnText.height; y++) {
+    // grab the row of pixels
+    const row = new ImageData(drawnText.width, 1); //ImageData(width, height)
+    for (let x = 0; x < drawnText.width; x++) {
+      const redIndex = y * (4 * drawnText.width) + x * 4;
+      row.data[x * 4] = drawnText.data[redIndex];
+      row.data[x * 4 + 1] = drawnText.data[redIndex + 1];
+      row.data[x * 4 + 2] = drawnText.data[redIndex + 2];
+      row.data[x * 4 + 3] = drawnText.data[redIndex + 3];
+    }
+    textImageByRows.push(row);
+  }
+
+  // shift the image
   let time = 0;
   setInterval(() => {
     ctx.clearRect(0, 0, width, height);
 
-    for (let y = 0; y < drawnText.height; y++) {
-      // grab the row of pixels
-      const row = new ImageData(drawnText.width, 1); //ImageData(width, height)
-      for (let x = 0; x < drawnText.width; x++) {
-        const redIndex = y * (4 * drawnText.width) + x * 4;
-        row.data[x * 4] = drawnText.data[redIndex];
-        row.data[x * 4 + 1] = drawnText.data[redIndex + 1];
-        row.data[x * 4 + 2] = drawnText.data[redIndex + 2];
-        row.data[x * 4 + 3] = drawnText.data[redIndex + 3];
-      }
-
+    textImageByRows.forEach((row, rowHeight) => {
       // calulate the delay
-      const delay = y;
+      const delay = rowHeight;
       let locationToDrawX = 0;
       if (time >= delay) {
         const maxTranslation =
@@ -52,9 +57,8 @@ export function getWavyText(textToDisplay, options = defaultOptions) {
         locationToDrawX =
           -maxTranslation * Math.sin(toRadians(wiggliness * (time - delay)));
       }
-      ctx.putImageData(row, locationToDrawX, y);
-    }
-
+      ctx.putImageData(row, locationToDrawX, rowHeight);
+    });
     time += 1;
   }, tickRate);
 
