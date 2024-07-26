@@ -8,7 +8,7 @@ new EventSource("/esbuild").addEventListener("change", () => location.reload());
 const root = document.getElementById("wrapper");
 
 let textToDisplay = "???";
-let drawnText = getWavyText(textToDisplay);
+const { drawnText, updateDrawing } = getWavyText(textToDisplay);
 root.append(drawnText);
 
 const controls = document.createElement("div");
@@ -62,8 +62,6 @@ inputs.forEach(({ label, type, id, description }) => {
 const button = controls.querySelector("#submitButton");
 
 button.addEventListener("click", () => {
-  drawnText.remove();
-
   textToDisplay = controls.querySelector("#textInput").value;
 
   const animationOptions = {};
@@ -73,8 +71,7 @@ button.addEventListener("click", () => {
     }
   });
 
-  drawnText = getWavyText(textToDisplay, animationOptions);
-  root.prepend(drawnText);
+  updateDrawing(textToDisplay, animationOptions);
 });
 
 root.append(controls);
