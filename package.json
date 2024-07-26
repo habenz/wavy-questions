@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "build": "esbuild app.js --bundle --outfile=out.js --loader:.html=text --serve=9000 --servedir=. --watch",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "esbuild app.js --bundle --outdir=./public --loader:.html=text",
+    "start": "esbuild app.js --bundle --outdir=./public --loader:.html=text --serve=9000 --servedir=. --watch"
   },
   "keywords": [],
   "author": "",
