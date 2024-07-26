@@ -44,7 +44,7 @@ export function getWavyText(textToDisplay, options = defaultOptions) {
 
   // shift the image
   let time = 0;
-  setInterval(() => {
+  const intervalHandle = setInterval(() => {
     ctx.clearRect(0, 0, width, height);
 
     textImageByRows.forEach((row, rowHeight) => {
@@ -62,7 +62,7 @@ export function getWavyText(textToDisplay, options = defaultOptions) {
     time += 1;
   }, tickRate);
 
-  return textBox;
+  return { textBox, intervalHandle };
 }
 
 function getCanvasSize(text, whitespaceRatio, fontSize) {

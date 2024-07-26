@@ -8,7 +8,7 @@ new EventSource("/esbuild").addEventListener("change", () => location.reload());
 const root = document.getElementById("wrapper");
 
 let textToDisplay = "???";
-let drawnText = getWavyText(textToDisplay);
+let { textBox: drawnText, intervalHandle } = getWavyText(textToDisplay);
 root.append(drawnText);
 
 const controls = document.createElement("div");
@@ -63,6 +63,7 @@ const button = controls.querySelector("#submitButton");
 
 button.addEventListener("click", () => {
   drawnText.remove();
+  clearInterval(intervalHandle);
 
   textToDisplay = controls.querySelector("#textInput").value;
 
@@ -73,7 +74,11 @@ button.addEventListener("click", () => {
     }
   });
 
-  drawnText = getWavyText(textToDisplay, animationOptions);
+  // """""expression context"""""
+  ({ textBox: drawnText, intervalHandle } = getWavyText(
+    textToDisplay,
+    animationOptions
+  ));
   root.prepend(drawnText);
 });
 
